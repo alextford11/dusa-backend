@@ -1,0 +1,11 @@
+version: "3"
+
+services:
+  next_goal_test_db:
+    image: postgres:latest
+    restart: always
+    ports:
+      - "5235:5432"
+    environment:
+      - POSTGRES_DB=dusa_test_db
+      - POSTGRES_PASSWORD=password

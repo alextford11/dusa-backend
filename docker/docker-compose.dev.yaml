@@ -1,0 +1,11 @@
+version: "3"
+
+services:
+  next_goal_dev_db:
+    image: postgres:latest
+    restart: always
+    ports:
+      - "5234:5432"
+    environment:
+      - POSTGRES_DB=dusa_dev_db
+      - POSTGRES_PASSWORD=password
