@@ -1,7 +1,7 @@
 version: "3"
 
 services:
-  next_goal_dev_db:
+  dusa_dev_db:
     image: postgres:latest
     restart: always
     ports:

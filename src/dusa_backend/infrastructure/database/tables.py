@@ -3,8 +3,9 @@ from datetime import datetime
 from decimal import Decimal
 from typing import Union
 
-from sqlalchemy import ForeignKey, types
+from sqlalchemy import ForeignKey, types, Integer, Column, func
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
+from sqlalchemy_utils import aggregated
 
 MODELS = Union["CategoryTable", "CategoryItemTable", "RecordTable", "LocationTable"]
 
@@ -33,6 +34,10 @@ class CategoryItemTable(Base):
 
     category = relationship(CategoryTable, back_populates="category_items")
     records = relationship("RecordTable", back_populates="category_item")
+
+    @aggregated("records", Column(Integer))
+    def records_value_sum(self):
+        return func.sum(RecordTable.value)
 
 
 class RecordTable(CreatedTimestampMixin, Base):

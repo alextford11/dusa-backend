@@ -15,7 +15,7 @@ class BaseRepository:
     def __init__(self, db_session: Session) -> None:
         self.db_session = db_session
 
-    def get(self, **kwargs) -> BaseModel:
+    def get(self, **kwargs) -> Any:
         return self.db_session.query(self.model).filter_by(**kwargs).one()
 
     def filter(self, *args, **kwargs) -> Query:
@@ -26,7 +26,7 @@ class BaseRepository:
             q = q.filter_by(**kwargs)
         return q
 
-    def all(self) -> List[BaseModel]:
+    def all(self) -> list[Any]:
         return self.db_session.query(self.model).all()
 
     def count(self, **kwargs) -> int:

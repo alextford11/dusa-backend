@@ -1,4 +1,3 @@
-from contextlib import contextmanager
 from typing import Callable, Generator
 
 from sqlalchemy import Engine, create_engine
@@ -27,7 +26,6 @@ def get_session() -> Callable[..., Session]:
 SessionLocal = get_session()
 
 
-@contextmanager
 def get_db() -> Generator[Session, None, None]:
     """
     Yields a SQLAlchemy session instance.

@@ -3,4 +3,4 @@ from src.dusa_backend.infrastructure.database.tables import LocationTable
 
 
 class LocationRepository(BaseRepository):
-    schema_class = LocationTable
+    model = LocationTable
