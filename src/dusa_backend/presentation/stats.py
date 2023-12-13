@@ -8,7 +8,7 @@ from src.dusa_backend.infrastructure.responses.stats import StatsListResponse
 router = APIRouter(prefix="/stats", tags=["Stats"])
 
 
-@router.get("", status_code=status.HTTP_200_OK, response_model=StatsListResponse)
-async def get_stats(db_session: Session = Depends(get_db)):
+@router.get("", status_code=status.HTTP_200_OK)
+async def get_stats(db_session: Session = Depends(get_db)) -> StatsListResponse:
     categories = CategoryRepository(db_session).all()
-    return {"stats": categories}
+    return StatsListResponse(stats=categories)
