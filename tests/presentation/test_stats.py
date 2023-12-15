@@ -1,3 +1,5 @@
+from datetime import datetime, timedelta
+
 from tests.factories.categories import CategoryFactory
 from tests.factories.category_items import CategoryItemFactory
 from tests.factories.records import RecordFactory
@@ -158,6 +160,71 @@ def test_stats_endpoint_multiple_records_multiple_category_items_multiple_catego
                         "name": category2_category_item3.name,
                         "records_value_sum": sum(record.value for record in category2_category_item3_records),
                     },
+                ],
+            },
+        ]
+    }
+
+
+def test_stats_endpoint_time_range_filter(client, db):
+    category_item1 = CategoryItemFactory()
+    category_item1_today_record = RecordFactory(category_item=category_item1)
+    category_item1_yesterday_record = RecordFactory(
+        created=datetime.now() - timedelta(days=1), category_item=category_item1
+    )
+    category_item2 = CategoryItemFactory()
+    category_item2_yesterday_record = RecordFactory(
+        created=datetime.now() - timedelta(days=1), category_item=category_item2
+    )
+    r = client.get("/stats?time_range=today")
+    assert r.status_code == 200
+    assert r.json() == {
+        "stats": [
+            {
+                "name": category_item1.category.name,
+                "category_items": [
+                    {"name": category_item1.name, "records_value_sum": category_item1_today_record.value}
+                ],
+            }
+        ]
+    }
+
+    r = client.get("/stats?time_range=yesterday")
+    assert r.status_code == 200
+    assert r.json() == {
+        "stats": [
+            {
+                "name": category_item1.category.name,
+                "category_items": [
+                    {"name": category_item1.name, "records_value_sum": category_item1_yesterday_record.value}
+                ],
+            },
+            {
+                "name": category_item2.category.name,
+                "category_items": [
+                    {"name": category_item2.name, "records_value_sum": category_item2_yesterday_record.value}
+                ],
+            },
+        ]
+    }
+
+    r = client.get("/stats?time_range=all_time")
+    assert r.status_code == 200
+    assert r.json() == {
+        "stats": [
+            {
+                "name": category_item1.category.name,
+                "category_items": [
+                    {
+                        "name": category_item1.name,
+                        "records_value_sum": category_item1_today_record.value + category_item1_yesterday_record.value,
+                    }
+                ],
+            },
+            {
+                "name": category_item2.category.name,
+                "category_items": [
+                    {"name": category_item2.name, "records_value_sum": category_item2_yesterday_record.value}
                 ],
             },
         ]

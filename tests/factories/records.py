@@ -1,3 +1,5 @@
+from datetime import datetime
+
 import factory
 
 from src.dusa_backend.infrastructure.database.tables import RecordTable
@@ -12,3 +14,4 @@ class RecordFactory(FactoryBase):
     value = factory.Faker("pyint", min_value=1, max_value=10)
     nsfw = False
     category_item = factory.SubFactory(CategoryItemFactory)
+    created = datetime.utcnow()
