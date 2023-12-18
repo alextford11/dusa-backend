@@ -10,7 +10,7 @@ def test_create_record_category_item_not_found(client, db):
     assert r.json() == {"detail": "CategoryItemTable not found"}
 
 
-def test_create_record_item_created(client, db):
+def test_create_record_created(client, db):
     assert not RecordRepository(db_session=db).exists()
 
     category_item = CategoryItemFactory()
