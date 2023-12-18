@@ -18,7 +18,11 @@ lint:
 
 .PHONY: test
 test:
-	poetry run pytest --cov=src --cov-report=xml # --cov-fail-under=100
+	poetry run pytest --cov=src --cov-report=xml --cov-fail-under=100
+
+.PHONY: cov-report
+cov-report:
+	poetry run pytest --cov=src --cov-report=html
 
 .PHONY: start-dev-docker
 start-dev-docker:
