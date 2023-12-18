@@ -6,8 +6,6 @@ from typing import Union
 from sqlalchemy import ForeignKey, types
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
 
-MODELS = Union["CategoryTable", "CategoryItemTable", "RecordTable", "LocationTable"]
-
 
 class CreatedTimestampMixin:
     created: Mapped[datetime] = mapped_column(default=datetime.utcnow)

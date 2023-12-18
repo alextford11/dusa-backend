@@ -5,7 +5,7 @@ from sqlalchemy.orm import Session
 
 from src.dusa_backend.domain.categories.repository import CategoryRepository
 from src.dusa_backend.infrastructure.database.session import get_db
-from src.dusa_backend.infrastructure.responses.stats import StatsListResponse
+from src.dusa_backend.infrastructure.schemas.stats import StatsListResponse
 
 router = APIRouter(prefix="/stats", tags=["Stats"])
 
@@ -25,5 +25,5 @@ async def get_stats(
     elif time_range == TimeRangeEnum.yesterday:
         categories = CategoryRepository(db_session).get_yesterdays_stats()
     else:
-        categories = CategoryRepository(db_session).all()
+        categories = CategoryRepository(db_session).get_all_time_stats()
     return StatsListResponse(stats=categories)

@@ -1,3 +1,10 @@
+from datetime import datetime, timedelta
+
+from tests.factories.categories import CategoryFactory
+from tests.factories.category_items import CategoryItemFactory
+from tests.factories.records import RecordFactory
+
+
 def test_dashboard_stats_endpoint_multiple_everything(client, db):
     category1 = CategoryFactory()
     category2 = CategoryFactory()
@@ -18,7 +25,7 @@ def test_dashboard_stats_endpoint_multiple_everything(client, db):
     category3_category_item_record = RecordFactory(category_item=category3_category_item)
     category4_category_item_record = RecordFactory(category_item=category4_category_item)
     category5_category_item_record = RecordFactory(category_item=category5_category_item)
-    category6_category_item_record = RecordFactory(category_item=category6_category_item)
+    RecordFactory(category_item=category6_category_item)
 
     yesterday = datetime.utcnow() - timedelta(days=1)
     category7 = CategoryFactory()
@@ -28,7 +35,7 @@ def test_dashboard_stats_endpoint_multiple_everything(client, db):
         RecordFactory(category_item=category7_category_item, created=yesterday),
         RecordFactory(category_item=category7_category_item, created=yesterday),
     ]
-    r = client.get("/stats/dashboard")
+    r = client.get("/dashboard")
     assert r.status_code == 200
 
     response = {
