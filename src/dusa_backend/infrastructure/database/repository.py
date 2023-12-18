@@ -1,4 +1,4 @@
-from typing import List, Any, Union
+from typing import Any
 
 from fastapi import Query, HTTPException
 from pydantic import BaseModel

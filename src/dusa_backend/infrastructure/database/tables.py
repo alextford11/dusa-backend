@@ -1,7 +1,6 @@
 import uuid
 from datetime import datetime
 from decimal import Decimal
-from typing import Union
 
 from sqlalchemy import ForeignKey, types
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
