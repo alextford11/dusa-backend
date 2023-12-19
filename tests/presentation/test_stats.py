@@ -1,5 +1,6 @@
 from datetime import datetime, timedelta
 
+from src.dusa_backend.domain.models import Category
 from tests.factories.categories import CategoryFactory
 from tests.factories.category_items import CategoryItemFactory
 from tests.factories.records import RecordFactory
@@ -225,6 +226,146 @@ def test_stats_endpoint_time_range_filter(client, db):
                 "name": category_item2.category.name,
                 "category_items": [
                     {"name": category_item2.name, "records_value_sum": category_item2_yesterday_record.value}
+                ],
+            },
+        ]
+    }
+
+
+def test_stats_endpoint_time_range_filter_with_nsfw(client, db):
+    category1 = CategoryFactory(nsfw=True)
+    category1_category_item = CategoryItemFactory(category=category1)
+    category1_category_item_today_record = RecordFactory(category_item=category1_category_item)
+    category1_category_item_yesterday_record = RecordFactory(
+        created=datetime.now() - timedelta(days=1), category_item=category1_category_item
+    )
+    category2 = CategoryFactory(nsfw=True)
+    category2_category_item = CategoryItemFactory(category=category2)
+    category2_category_item_yesterday_record = RecordFactory(
+        created=datetime.now() - timedelta(days=1), category_item=category2_category_item
+    )
+    category3 = CategoryFactory(nsfw=False)
+    category3_category_item = CategoryItemFactory(category=category3)
+    category3_category_item_yesterday_record = RecordFactory(
+        created=datetime.now() - timedelta(days=1), category_item=category3_category_item
+    )
+    r = client.get("/stats?time_range=today&nsfw=true")
+    assert r.status_code == 200
+    assert r.json() == {
+        "stats": [
+            {
+                "name": category1.name,
+                "category_items": [
+                    {
+                        "name": category1_category_item.name,
+                        "records_value_sum": category1_category_item_today_record.value,
+                    }
+                ],
+            }
+        ]
+    }
+
+    r = client.get("/stats?time_range=today&nsfw=false")
+    assert r.status_code == 200
+    assert r.json() == {"stats": []}
+
+    r = client.get("/stats?time_range=yesterday&nsfw=true")
+    assert r.status_code == 200
+    assert r.json() == {
+        "stats": [
+            {
+                "name": category1.name,
+                "category_items": [
+                    {
+                        "name": category1_category_item.name,
+                        "records_value_sum": category1_category_item_yesterday_record.value,
+                    }
+                ],
+            },
+            {
+                "name": category2.name,
+                "category_items": [
+                    {
+                        "name": category2_category_item.name,
+                        "records_value_sum": category2_category_item_yesterday_record.value,
+                    }
+                ],
+            },
+            {
+                "name": category3.name,
+                "category_items": [
+                    {
+                        "name": category3_category_item.name,
+                        "records_value_sum": category3_category_item_yesterday_record.value,
+                    }
+                ],
+            },
+        ]
+    }
+
+    r = client.get("/stats?time_range=yesterday&nsfw=false")
+    assert r.status_code == 200
+    assert r.json() == {
+        "stats": [
+            {
+                "name": category3.name,
+                "category_items": [
+                    {
+                        "name": category3_category_item.name,
+                        "records_value_sum": category3_category_item_yesterday_record.value,
+                    }
+                ],
+            },
+        ]
+    }
+
+    r = client.get("/stats?time_range=all_time&nsfw=true")
+    assert r.status_code == 200
+    assert r.json() == {
+        "stats": [
+            {
+                "name": category1.name,
+                "category_items": [
+                    {
+                        "name": category1_category_item.name,
+                        "records_value_sum": (
+                            category1_category_item_today_record.value + category1_category_item_yesterday_record.value
+                        ),
+                    }
+                ],
+            },
+            {
+                "name": category2.name,
+                "category_items": [
+                    {
+                        "name": category2_category_item.name,
+                        "records_value_sum": category2_category_item_yesterday_record.value,
+                    }
+                ],
+            },
+            {
+                "name": category3.name,
+                "category_items": [
+                    {
+                        "name": category3_category_item.name,
+                        "records_value_sum": category3_category_item_yesterday_record.value,
+                    }
+                ],
+            },
+        ]
+    }
+
+    r = client.get("/stats?time_range=all_time&nsfw=false")
+    assert r.status_code == 200
+    assert r.json() == {
+        "stats": [
+            {
+                "name": category3.name,
+                "category_items": [
+                    {
+                        "name": category3_category_item.name,
+                        "records_value_sum": category3_category_item_yesterday_record.value,
+                    }
                 ],
             },
         ]

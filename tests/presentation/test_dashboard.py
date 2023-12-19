@@ -102,3 +102,130 @@ def test_dashboard_stats_endpoint_multiple_everything(client, db):
     }
     response["stats"]["all_time"] = response["stats"]["today"]
     assert r.json() == response
+
+
+def test_dashboard_stats_endpoint_multiple_everything_with_nsfw(client, db):
+    category1 = CategoryFactory(nsfw=True)
+    category1_category_item = CategoryItemFactory(category=category1)
+    category1_category_item_today_record = RecordFactory(category_item=category1_category_item)
+    category1_category_item_yesterday_record = RecordFactory(
+        created=datetime.now() - timedelta(days=1), category_item=category1_category_item
+    )
+    category2 = CategoryFactory(nsfw=True)
+    category2_category_item = CategoryItemFactory(category=category2)
+    category2_category_item_yesterday_record = RecordFactory(
+        created=datetime.now() - timedelta(days=1), category_item=category2_category_item
+    )
+    category3 = CategoryFactory(nsfw=False)
+    category3_category_item = CategoryItemFactory(category=category3)
+    category3_category_item_yesterday_record = RecordFactory(
+        created=datetime.now() - timedelta(days=1), category_item=category3_category_item
+    )
+    r = client.get("/dashboard?nsfw=false")
+    assert r.status_code == 200
+    assert r.json() == {
+        "stats": {
+            "today": [],
+            "yesterday": [
+                {
+                    "name": category3.name,
+                    "category_items": [
+                        {
+                            "name": category3_category_item.name,
+                            "records_value_sum": category3_category_item_yesterday_record.value,
+                        }
+                    ],
+                },
+            ],
+            "all_time": [
+                {
+                    "name": category3.name,
+                    "category_items": [
+                        {
+                            "name": category3_category_item.name,
+                            "records_value_sum": category3_category_item_yesterday_record.value,
+                        }
+                    ],
+                },
+            ],
+        }
+    }
+
+    r = client.get("/dashboard?nsfw=true")
+    assert r.status_code == 200
+    assert r.json() == {
+        "stats": {
+            "today": [
+                {
+                    "name": category1.name,
+                    "category_items": [
+                        {
+                            "name": category1_category_item.name,
+                            "records_value_sum": category1_category_item_today_record.value,
+                        }
+                    ],
+                }
+            ],
+            "yesterday": [
+                {
+                    "name": category1.name,
+                    "category_items": [
+                        {
+                            "name": category1_category_item.name,
+                            "records_value_sum": category1_category_item_yesterday_record.value,
+                        }
+                    ],
+                },
+                {
+                    "name": category2.name,
+                    "category_items": [
+                        {
+                            "name": category2_category_item.name,
+                            "records_value_sum": category2_category_item_yesterday_record.value,
+                        }
+                    ],
+                },
+                {
+                    "name": category3.name,
+                    "category_items": [
+                        {
+                            "name": category3_category_item.name,
+                            "records_value_sum": category3_category_item_yesterday_record.value,
+                        }
+                    ],
+                },
+            ],
+            "all_time": [
+                {
+                    "name": category1.name,
+                    "category_items": [
+                        {
+                            "name": category1_category_item.name,
+                            "records_value_sum": (
+                                category1_category_item_today_record.value
+                                + category1_category_item_yesterday_record.value
+                            ),
+                        }
+                    ],
+                },
+                {
+                    "name": category2.name,
+                    "category_items": [
+                        {
+                            "name": category2_category_item.name,
+                            "records_value_sum": category2_category_item_yesterday_record.value,
+                        }
+                    ],
+                },
+                {
+                    "name": category3.name,
+                    "category_items": [
+                        {
+                            "name": category3_category_item.name,
+                            "records_value_sum": category3_category_item_yesterday_record.value,
+                        }
+                    ],
+                },
+            ],
+        }
+    }

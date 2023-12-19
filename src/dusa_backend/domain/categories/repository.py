@@ -8,42 +8,41 @@ from src.dusa_backend.infrastructure.database.tables import CategoryTable, Categ
 
 from sqlalchemy.orm import aliased
 
+filtered_records_alias = aliased(RecordTable)
+
 
 class CategoryRepository(BaseRepository):
     model = CategoryTable
 
-    def _query_categories_between_datetimes(self, start_of_day: datetime, end_of_day: datetime) -> Query:
-        filtered_records_alias = aliased(RecordTable)
-        return (
-            self.db_session.query(CategoryTable)
-            .join(CategoryItemTable)
-            .join(filtered_records_alias)
-            .filter(filtered_records_alias.created.between(start_of_day, end_of_day))
-            .options(
-                contains_eager(CategoryTable.category_items, CategoryItemTable.records, alias=filtered_records_alias)
-            )
+    def _query_categories(
+        self, start_of_day: datetime | None, end_of_day: datetime | None, nsfw: bool, limit: int | None = None
+    ) -> Query:
+        query = self.db_session.query(self.model).join(CategoryItemTable).join(filtered_records_alias)
+        if not nsfw:
+            # exclude categories that have nsfw equal to true when nsfw passed is false
+            query = query.filter(~self.model.nsfw.is_(True))
+
+        if start_of_day and end_of_day:
+            query = query.filter(filtered_records_alias.created.between(start_of_day, end_of_day))
+        query = query.options(
+            contains_eager(self.model.category_items, CategoryItemTable.records, alias=filtered_records_alias)
         )
 
-    @staticmethod
-    def _limit_query(query: Query, limit: int | None = None) -> Query:
         if limit:
-            return query.limit(limit)
+            query = query.limit(limit)
         return query
 
-    def get_todays_stats(self, limit: int | None = None) -> Query:
+    def get_todays_stats(self, limit: int | None = None, nsfw: bool = False) -> Query:
         now = datetime.utcnow()
         start_of_day = now.replace(hour=0, minute=0, second=0)
         end_of_day = now.replace(hour=23, minute=59, second=59)
-        query = self._query_categories_between_datetimes(start_of_day, end_of_day)
-        return self._limit_query(query, limit)
+        return self._query_categories(start_of_day=start_of_day, end_of_day=end_of_day, nsfw=nsfw, limit=limit)
 
-    def get_yesterdays_stats(self, limit: int | None = None) -> Query:
+    def get_yesterdays_stats(self, limit: int | None = None, nsfw: bool = False) -> Query:
         yesterday = datetime.utcnow() - timedelta(days=1)
         start_of_day = yesterday.replace(hour=0, minute=0, second=0)
         end_of_day = yesterday.replace(hour=23, minute=59, second=59)
-        query = self._query_categories_between_datetimes(start_of_day, end_of_day)
-        return self._limit_query(query, limit)
+        return self._query_categories(start_of_day=start_of_day, end_of_day=end_of_day, nsfw=nsfw, limit=limit)
 
-    def get_all_time_stats(self, limit: int | None = None) -> Query:
-        query = self.db_session.query(CategoryTable)
-        return self._limit_query(query, limit)
+    def get_all_time_stats(self, limit: int | None = None, nsfw: bool = False) -> Query:
+        return self._query_categories(start_of_day=None, end_of_day=None, nsfw=nsfw, limit=limit)
