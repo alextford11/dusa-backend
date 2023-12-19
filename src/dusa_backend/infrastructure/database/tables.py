@@ -18,6 +18,7 @@ class CategoryTable(Base):
     __tablename__ = "categories"
 
     name: Mapped[str]
+    nsfw: Mapped[bool] = mapped_column(default=False)
 
     category_items = relationship("CategoryItemTable", back_populates="category")
 
@@ -40,7 +41,6 @@ class RecordTable(CreatedTimestampMixin, Base):
     __tablename__ = "records"
 
     value: Mapped[Decimal]
-    nsfw: Mapped[bool] = mapped_column(default=False)
     category_item_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("category_items.id"))
 
     category_item = relationship(CategoryItemTable, back_populates="records")

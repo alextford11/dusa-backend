@@ -11,5 +11,3 @@ class FactoryBase(SQLAlchemyModelFactory):
         abstract = True
         sqlalchemy_session = TestSession
         sqlalchemy_session_persistence = "commit"
-
-    # id = factory.Faker("uuid4")

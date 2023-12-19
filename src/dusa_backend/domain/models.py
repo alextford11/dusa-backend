@@ -8,7 +8,6 @@ class Record(BaseModel):
 
     created: datetime
     value: Decimal
-    nsfw: bool
 
 
 class CategoryItem(BaseModel):
@@ -22,6 +21,7 @@ class Category(BaseModel):
     model_config = ConfigDict(from_attributes=True)
 
     name: str
+    nsfw: bool
     category_items: list[CategoryItem]
 
 

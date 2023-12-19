@@ -9,3 +9,4 @@ class CategoryFactory(FactoryBase):
         model = CategoryTable
 
     name = factory.Sequence(lambda n: f"Category{n}")
+    nsfw = False

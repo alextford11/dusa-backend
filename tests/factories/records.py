@@ -12,6 +12,5 @@ class RecordFactory(FactoryBase):
         model = RecordTable
 
     value = factory.Faker("pyint", min_value=1, max_value=10)
-    nsfw = False
     category_item = factory.SubFactory(CategoryItemFactory)
     created = datetime.utcnow()
