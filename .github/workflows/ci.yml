@@ -1,0 +1,85 @@
+name: Run tests and lint
+on:
+  push:
+    branches:
+      - "main"
+  pull_request:
+    types: [ opened, synchronize, reopened ]
+
+jobs:
+  lint:
+    name: Run linter
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: [ "3.11" ]
+
+    steps:
+      # Clone the git repo
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      # Setup Python
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      # Install poetry for packages
+      - name: Install and configure Poetry
+        uses: snok/install-poetry@v1
+
+      # Install packages
+      - name: Install Python dependencies
+        run: make install-dev
+
+      # Run pre-commit with ruff hooks
+      - name: Run pre-commit hooks
+        uses: pre-commit/action@v3.0.0
+        env:
+          SKIP: ruff
+        with:
+          extra_args: --all-files
+
+      # Run ruff check here so we see GitHub output
+      - name: Run ruff
+        run: poetry run ruff check src/ tests/ --output-format=github
+
+  test:
+    name: Run tests
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: [ "3.11" ]
+
+    steps:
+      # Clone the git repo
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      # Setup python
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      # Install poetry for packages
+      - name: Install and configure Poetry
+        uses: snok/install-poetry@v1
+
+      # Install packages for the package and testing
+      - name: Install dependencies
+        run: make install-dev
+
+      # Start docker testing services, postgres and redis
+      - name: Start services
+        run: make start-test-docker
+
+      # Run tests
+      - name: Run tests
+        run: make test
+
+      # Stop docker testing services, postgres and redis
+      - name: Stop services
+        working-directory: ${{ env.working_directory }}
+        run: make stop-test-docker
