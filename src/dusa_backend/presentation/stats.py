@@ -1,11 +1,9 @@
-from enum import StrEnum
-
 from fastapi import APIRouter, status, Depends
 from sqlalchemy.orm import Session
 
 from src.dusa_backend.domain.categories.repository import CategoryRepository
 from src.dusa_backend.infrastructure.database.session import get_db
-from src.dusa_backend.infrastructure.schemas.stats import StatsListResponse, StatsCategoryResponse
+from src.dusa_backend.infrastructure.schemas.stats import StatsListResponse
 from src.dusa_backend.infrastructure.schemas.utils import TimeRangeEnum
 
 router = APIRouter(prefix="/stats", tags=["Stats"])
