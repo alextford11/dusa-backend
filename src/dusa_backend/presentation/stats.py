@@ -6,14 +6,9 @@ from sqlalchemy.orm import Session
 from src.dusa_backend.domain.categories.repository import CategoryRepository
 from src.dusa_backend.infrastructure.database.session import get_db
 from src.dusa_backend.infrastructure.schemas.stats import StatsListResponse, StatsCategoryResponse
+from src.dusa_backend.infrastructure.schemas.utils import TimeRangeEnum
 
 router = APIRouter(prefix="/stats", tags=["Stats"])
-
-
-class TimeRangeEnum(StrEnum):
-    today = "today"
-    yesterday = "yesterday"
-    all_time = "all_time"
 
 
 @router.get("", status_code=status.HTTP_200_OK)

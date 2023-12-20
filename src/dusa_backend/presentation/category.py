@@ -15,5 +15,5 @@ def create_category(payload: PostCategoryPayload, db_session: Session = Depends(
     category_repo = CategoryRepository(db_session)
     if category_repo.exists(name=payload.name):
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Category already exists")
-    category_repo.create(CategoryTable(name=payload.name, nsfw=payload.nsfw))
+    category_repo.create(CategoryTable(**payload.model_dump()))
     return {"message": "Category created"}
