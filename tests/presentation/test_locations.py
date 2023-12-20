@@ -7,7 +7,7 @@ from tests.factories.locations import LocationFactory
 def test_create_record_created(client, db):
     assert not LocationRepository(db_session=db).exists()
 
-    r = client.post("/location/create", json={"latitude": 45.0, "longitude": 45.0})
+    r = client.post("/location", json={"latitude": 45.0, "longitude": 45.0})
     assert r.status_code == 201
     assert r.json() == {"message": "Location created"}
     assert LocationRepository(db_session=db).exists()

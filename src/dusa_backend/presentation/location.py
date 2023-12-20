@@ -11,7 +11,7 @@ from src.dusa_backend.infrastructure.schemas.utils import TimeRangeEnum
 router = APIRouter(prefix="/location", tags=["location"])
 
 
-@router.post("/create", status_code=status.HTTP_201_CREATED)
+@router.post("/", status_code=status.HTTP_201_CREATED)
 def create_location(payload: PostLocationPayload, db_session: Session = Depends(get_db)) -> dict:
     LocationRepository(db_session).create(LocationTable(**payload.model_dump()))
     return {"message": "Location created"}
