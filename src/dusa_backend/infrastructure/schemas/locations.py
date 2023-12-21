@@ -2,19 +2,15 @@ from decimal import Decimal
 
 from pydantic import BaseModel, ConfigDict
 
+from src.dusa_backend.domain.models import Location
 
-class LocationObject(BaseModel):
-    model_config = ConfigDict(from_attributes=True)
 
+class PostLocationPayload(BaseModel):
     latitude: Decimal
     longitude: Decimal
-
-
-class PostLocationPayload(LocationObject):
-    pass
 
 
 class ListLocationsResponse(BaseModel):
     model_config = ConfigDict(from_attributes=True)
 
-    locations: list[LocationObject]
+    locations: list[Location]

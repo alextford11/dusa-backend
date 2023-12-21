@@ -26,8 +26,18 @@ def test_get_locations_correct(client, db):
     assert r.status_code == 200
     assert r.json() == {
         "locations": [
-            {"latitude": str(location1.latitude), "longitude": str(location1.longitude)},
-            {"latitude": str(location2.latitude), "longitude": str(location2.longitude)},
+            {
+                "id": str(location1.id),
+                "created": location1.created.isoformat(),
+                "latitude": str(location1.latitude),
+                "longitude": str(location1.longitude),
+            },
+            {
+                "id": str(location2.id),
+                "created": location2.created.isoformat(),
+                "latitude": str(location2.latitude),
+                "longitude": str(location2.longitude),
+            },
         ]
     }
 
@@ -40,22 +50,56 @@ def test_get_locations_with_time_range_filter(client, db):
     assert r.status_code == 200
     assert r.json() == {
         "locations": [
-            {"latitude": str(location1.latitude), "longitude": str(location1.longitude)},
-            {"latitude": str(location2.latitude), "longitude": str(location2.longitude)},
+            {
+                "id": str(location1.id),
+                "created": location1.created.isoformat(),
+                "latitude": str(location1.latitude),
+                "longitude": str(location1.longitude),
+            },
+            {
+                "id": str(location2.id),
+                "created": location2.created.isoformat(),
+                "latitude": str(location2.latitude),
+                "longitude": str(location2.longitude),
+            },
         ]
     }
 
     r = client.get("/location/list?time_range=yesterday")
     assert r.status_code == 200
-    assert r.json() == {"locations": [{"latitude": str(location3.latitude), "longitude": str(location3.longitude)}]}
+    assert r.json() == {
+        "locations": [
+            {
+                "id": str(location3.id),
+                "created": location3.created.isoformat(),
+                "latitude": str(location3.latitude),
+                "longitude": str(location3.longitude),
+            }
+        ]
+    }
 
     r = client.get("/location/list?time_range=all_time")
     assert r.status_code == 200
     assert r.json() == {
         "locations": [
-            {"latitude": str(location3.latitude), "longitude": str(location3.longitude)},
-            {"latitude": str(location1.latitude), "longitude": str(location1.longitude)},
-            {"latitude": str(location2.latitude), "longitude": str(location2.longitude)},
+            {
+                "id": str(location3.id),
+                "created": location3.created.isoformat(),
+                "latitude": str(location3.latitude),
+                "longitude": str(location3.longitude),
+            },
+            {
+                "id": str(location1.id),
+                "created": location1.created.isoformat(),
+                "latitude": str(location1.latitude),
+                "longitude": str(location1.longitude),
+            },
+            {
+                "id": str(location2.id),
+                "created": location2.created.isoformat(),
+                "latitude": str(location2.latitude),
+                "longitude": str(location2.longitude),
+            },
         ]
     }
 

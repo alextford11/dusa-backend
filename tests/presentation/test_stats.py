@@ -13,8 +13,15 @@ def test_stats_endpoint_single_record(client, db):
     assert r.json() == {
         "stats": [
             {
+                "id": str(record.category_item.category.id),
                 "name": record.category_item.category.name,
-                "category_items": [{"name": record.category_item.name, "records_value_sum": record.value}],
+                "category_items": [
+                    {
+                        "id": str(record.category_item.id),
+                        "name": record.category_item.name,
+                        "records_value_sum": str(record.value),
+                    },
+                ],
             }
         ]
     }
@@ -32,9 +39,14 @@ def test_stats_endpoint_multiple_records(client, db):
     assert r.json() == {
         "stats": [
             {
+                "id": str(category_item.category.id),
                 "name": category_item.category.name,
                 "category_items": [
-                    {"name": category_item.name, "records_value_sum": sum(record.value for record in records)}
+                    {
+                        "id": str(category_item.id),
+                        "name": category_item.name,
+                        "records_value_sum": str(sum(record.value for record in records)),
+                    },
                 ],
             }
         ]
@@ -66,19 +78,23 @@ def test_stats_endpoint_multiple_records_multiple_category_items(client, db):
     assert r.json() == {
         "stats": [
             {
+                "id": str(category.id),
                 "name": category.name,
                 "category_items": [
                     {
+                        "id": str(category_item1.id),
                         "name": category_item1.name,
-                        "records_value_sum": sum(record.value for record in category_item1_records),
+                        "records_value_sum": str(sum(record.value for record in category_item1_records)),
                     },
                     {
+                        "id": str(category_item2.id),
                         "name": category_item2.name,
-                        "records_value_sum": sum(record.value for record in category_item2_records),
+                        "records_value_sum": str(sum(record.value for record in category_item2_records)),
                     },
                     {
+                        "id": str(category_item3.id),
                         "name": category_item3.name,
-                        "records_value_sum": sum(record.value for record in category_item3_records),
+                        "records_value_sum": str(sum(record.value for record in category_item3_records)),
                     },
                 ],
             }
@@ -130,36 +146,44 @@ def test_stats_endpoint_multiple_records_multiple_category_items_multiple_catego
     assert r.json() == {
         "stats": [
             {
+                "id": str(category1.id),
                 "name": category1.name,
                 "category_items": [
                     {
+                        "id": str(category1_category_item1.id),
                         "name": category1_category_item1.name,
-                        "records_value_sum": sum(record.value for record in category1_category_item1_records),
+                        "records_value_sum": str(sum(record.value for record in category1_category_item1_records)),
                     },
                     {
+                        "id": str(category1_category_item2.id),
                         "name": category1_category_item2.name,
-                        "records_value_sum": sum(record.value for record in category1_category_item2_records),
+                        "records_value_sum": str(sum(record.value for record in category1_category_item2_records)),
                     },
                     {
+                        "id": str(category1_category_item3.id),
                         "name": category1_category_item3.name,
-                        "records_value_sum": sum(record.value for record in category1_category_item3_records),
+                        "records_value_sum": str(sum(record.value for record in category1_category_item3_records)),
                     },
                 ],
             },
             {
+                "id": str(category2.id),
                 "name": category2.name,
                 "category_items": [
                     {
+                        "id": str(category2_category_item1.id),
                         "name": category2_category_item1.name,
-                        "records_value_sum": sum(record.value for record in category2_category_item1_records),
+                        "records_value_sum": str(sum(record.value for record in category2_category_item1_records)),
                     },
                     {
+                        "id": str(category2_category_item2.id),
                         "name": category2_category_item2.name,
-                        "records_value_sum": sum(record.value for record in category2_category_item2_records),
+                        "records_value_sum": str(sum(record.value for record in category2_category_item2_records)),
                     },
                     {
+                        "id": str(category2_category_item3.id),
                         "name": category2_category_item3.name,
-                        "records_value_sum": sum(record.value for record in category2_category_item3_records),
+                        "records_value_sum": str(sum(record.value for record in category2_category_item3_records)),
                     },
                 ],
             },
@@ -182,9 +206,14 @@ def test_stats_endpoint_time_range_filter(client, db):
     assert r.json() == {
         "stats": [
             {
+                "id": str(category_item1.category.id),
                 "name": category_item1.category.name,
                 "category_items": [
-                    {"name": category_item1.name, "records_value_sum": category_item1_today_record.value}
+                    {
+                        "id": str(category_item1.id),
+                        "name": category_item1.name,
+                        "records_value_sum": str(category_item1_today_record.value),
+                    }
                 ],
             }
         ]
@@ -195,15 +224,25 @@ def test_stats_endpoint_time_range_filter(client, db):
     assert r.json() == {
         "stats": [
             {
+                "id": str(category_item1.category.id),
                 "name": category_item1.category.name,
                 "category_items": [
-                    {"name": category_item1.name, "records_value_sum": category_item1_yesterday_record.value}
+                    {
+                        "id": str(category_item1.id),
+                        "name": category_item1.name,
+                        "records_value_sum": str(category_item1_yesterday_record.value),
+                    }
                 ],
             },
             {
+                "id": str(category_item2.category.id),
                 "name": category_item2.category.name,
                 "category_items": [
-                    {"name": category_item2.name, "records_value_sum": category_item2_yesterday_record.value}
+                    {
+                        "id": str(category_item2.id),
+                        "name": category_item2.name,
+                        "records_value_sum": str(category_item2_yesterday_record.value),
+                    }
                 ],
             },
         ]
@@ -214,18 +253,27 @@ def test_stats_endpoint_time_range_filter(client, db):
     assert r.json() == {
         "stats": [
             {
+                "id": str(category_item1.category.id),
                 "name": category_item1.category.name,
                 "category_items": [
                     {
+                        "id": str(category_item1.id),
                         "name": category_item1.name,
-                        "records_value_sum": category_item1_today_record.value + category_item1_yesterday_record.value,
+                        "records_value_sum": str(
+                            category_item1_today_record.value + category_item1_yesterday_record.value
+                        ),
                     }
                 ],
             },
             {
+                "id": str(category_item2.category.id),
                 "name": category_item2.category.name,
                 "category_items": [
-                    {"name": category_item2.name, "records_value_sum": category_item2_yesterday_record.value}
+                    {
+                        "id": str(category_item2.id),
+                        "name": category_item2.name,
+                        "records_value_sum": str(category_item2_yesterday_record.value),
+                    }
                 ],
             },
         ]
@@ -254,11 +302,13 @@ def test_stats_endpoint_time_range_filter_with_nsfw(client, db):
     assert r.json() == {
         "stats": [
             {
+                "id": str(category1.id),
                 "name": category1.name,
                 "category_items": [
                     {
+                        "id": str(category1_category_item.id),
                         "name": category1_category_item.name,
-                        "records_value_sum": category1_category_item_today_record.value,
+                        "records_value_sum": str(category1_category_item_today_record.value),
                     }
                 ],
             }
@@ -274,29 +324,35 @@ def test_stats_endpoint_time_range_filter_with_nsfw(client, db):
     assert r.json() == {
         "stats": [
             {
+                "id": str(category1.id),
                 "name": category1.name,
                 "category_items": [
                     {
+                        "id": str(category1_category_item.id),
                         "name": category1_category_item.name,
-                        "records_value_sum": category1_category_item_yesterday_record.value,
+                        "records_value_sum": str(category1_category_item_yesterday_record.value),
                     }
                 ],
             },
             {
+                "id": str(category2.id),
                 "name": category2.name,
                 "category_items": [
                     {
+                        "id": str(category2_category_item.id),
                         "name": category2_category_item.name,
-                        "records_value_sum": category2_category_item_yesterday_record.value,
+                        "records_value_sum": str(category2_category_item_yesterday_record.value),
                     }
                 ],
             },
             {
+                "id": str(category3.id),
                 "name": category3.name,
                 "category_items": [
                     {
+                        "id": str(category3_category_item.id),
                         "name": category3_category_item.name,
-                        "records_value_sum": category3_category_item_yesterday_record.value,
+                        "records_value_sum": str(category3_category_item_yesterday_record.value),
                     }
                 ],
             },
@@ -308,11 +364,13 @@ def test_stats_endpoint_time_range_filter_with_nsfw(client, db):
     assert r.json() == {
         "stats": [
             {
+                "id": str(category3.id),
                 "name": category3.name,
                 "category_items": [
                     {
+                        "id": str(category3_category_item.id),
                         "name": category3_category_item.name,
-                        "records_value_sum": category3_category_item_yesterday_record.value,
+                        "records_value_sum": str(category3_category_item_yesterday_record.value),
                     }
                 ],
             },
@@ -324,31 +382,37 @@ def test_stats_endpoint_time_range_filter_with_nsfw(client, db):
     assert r.json() == {
         "stats": [
             {
+                "id": str(category1.id),
                 "name": category1.name,
                 "category_items": [
                     {
+                        "id": str(category1_category_item.id),
                         "name": category1_category_item.name,
-                        "records_value_sum": (
+                        "records_value_sum": str(
                             category1_category_item_today_record.value + category1_category_item_yesterday_record.value
                         ),
                     }
                 ],
             },
             {
+                "id": str(category2.id),
                 "name": category2.name,
                 "category_items": [
                     {
+                        "id": str(category2_category_item.id),
                         "name": category2_category_item.name,
-                        "records_value_sum": category2_category_item_yesterday_record.value,
+                        "records_value_sum": str(category2_category_item_yesterday_record.value),
                     }
                 ],
             },
             {
+                "id": str(category3.id),
                 "name": category3.name,
                 "category_items": [
                     {
+                        "id": str(category3_category_item.id),
                         "name": category3_category_item.name,
-                        "records_value_sum": category3_category_item_yesterday_record.value,
+                        "records_value_sum": str(category3_category_item_yesterday_record.value),
                     }
                 ],
             },
@@ -360,11 +424,13 @@ def test_stats_endpoint_time_range_filter_with_nsfw(client, db):
     assert r.json() == {
         "stats": [
             {
+                "id": str(category3.id),
                 "name": category3.name,
                 "category_items": [
                     {
+                        "id": str(category3_category_item.id),
                         "name": category3_category_item.name,
-                        "records_value_sum": category3_category_item_yesterday_record.value,
+                        "records_value_sum": str(category3_category_item_yesterday_record.value),
                     }
                 ],
             },

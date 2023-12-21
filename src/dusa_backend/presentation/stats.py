@@ -19,4 +19,4 @@ async def get_stats(
         categories = CategoryRepository(db_session).get_yesterdays_stats(nsfw=nsfw)
     else:
         categories = CategoryRepository(db_session).get_all_time_stats(nsfw=nsfw)
-    return StatsListResponse(stats=categories)
+    return StatsListResponse(stats=categories)  # type: ignore

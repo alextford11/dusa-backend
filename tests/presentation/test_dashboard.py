@@ -42,58 +42,70 @@ def test_dashboard_stats_endpoint_multiple_everything(client, db):
         "stats": {
             "today": [
                 {
+                    "id": str(category1.id),
                     "name": category1.name,
                     "category_items": [
                         {
+                            "id": str(category1_category_item.id),
                             "name": category1_category_item.name,
-                            "records_value_sum": category1_category_item_record.value,
+                            "records_value_sum": str(category1_category_item_record.value),
                         },
                     ],
                 },
                 {
+                    "id": str(category2.id),
                     "name": category2.name,
                     "category_items": [
                         {
+                            "id": str(category2_category_item.id),
                             "name": category2_category_item.name,
-                            "records_value_sum": category2_category_item_record.value,
+                            "records_value_sum": str(category2_category_item_record.value),
                         },
                     ],
                 },
                 {
+                    "id": str(category3.id),
                     "name": category3.name,
                     "category_items": [
                         {
+                            "id": str(category3_category_item.id),
                             "name": category3_category_item.name,
-                            "records_value_sum": category3_category_item_record.value,
+                            "records_value_sum": str(category3_category_item_record.value),
                         },
                     ],
                 },
                 {
+                    "id": str(category4.id),
                     "name": category4.name,
                     "category_items": [
                         {
+                            "id": str(category4_category_item.id),
                             "name": category4_category_item.name,
-                            "records_value_sum": category4_category_item_record.value,
+                            "records_value_sum": str(category4_category_item_record.value),
                         },
                     ],
                 },
                 {
+                    "id": str(category5.id),
                     "name": category5.name,
                     "category_items": [
                         {
+                            "id": str(category5_category_item.id),
                             "name": category5_category_item.name,
-                            "records_value_sum": category5_category_item_record.value,
+                            "records_value_sum": str(category5_category_item_record.value),
                         },
                     ],
                 },
             ],
             "yesterday": [
                 {
+                    "id": str(category7.id),
                     "name": category7.name,
                     "category_items": [
                         {
+                            "id": str(category7_category_item.id),
                             "name": category7_category_item.name,
-                            "records_value_sum": sum(record.value for record in category7_category_item_records),
+                            "records_value_sum": str(sum(record.value for record in category7_category_item_records)),
                         },
                     ],
                 },
@@ -128,22 +140,26 @@ def test_dashboard_stats_endpoint_multiple_everything_with_nsfw(client, db):
             "today": [],
             "yesterday": [
                 {
+                    "id": str(category3.id),
                     "name": category3.name,
                     "category_items": [
                         {
+                            "id": str(category3_category_item.id),
                             "name": category3_category_item.name,
-                            "records_value_sum": category3_category_item_yesterday_record.value,
+                            "records_value_sum": str(category3_category_item_yesterday_record.value),
                         }
                     ],
                 },
             ],
             "all_time": [
                 {
+                    "id": str(category3.id),
                     "name": category3.name,
                     "category_items": [
                         {
+                            "id": str(category3_category_item.id),
                             "name": category3_category_item.name,
-                            "records_value_sum": category3_category_item_yesterday_record.value,
+                            "records_value_sum": str(category3_category_item_yesterday_record.value),
                         }
                     ],
                 },
@@ -157,51 +173,61 @@ def test_dashboard_stats_endpoint_multiple_everything_with_nsfw(client, db):
         "stats": {
             "today": [
                 {
+                    "id": str(category1.id),
                     "name": category1.name,
                     "category_items": [
                         {
+                            "id": str(category1_category_item.id),
                             "name": category1_category_item.name,
-                            "records_value_sum": category1_category_item_today_record.value,
+                            "records_value_sum": str(category1_category_item_today_record.value),
                         }
                     ],
                 }
             ],
             "yesterday": [
                 {
+                    "id": str(category1.id),
                     "name": category1.name,
                     "category_items": [
                         {
+                            "id": str(category1_category_item.id),
                             "name": category1_category_item.name,
-                            "records_value_sum": category1_category_item_yesterday_record.value,
+                            "records_value_sum": str(category1_category_item_yesterday_record.value),
                         }
                     ],
                 },
                 {
+                    "id": str(category2.id),
                     "name": category2.name,
                     "category_items": [
                         {
+                            "id": str(category2_category_item.id),
                             "name": category2_category_item.name,
-                            "records_value_sum": category2_category_item_yesterday_record.value,
+                            "records_value_sum": str(category2_category_item_yesterday_record.value),
                         }
                     ],
                 },
                 {
+                    "id": str(category3.id),
                     "name": category3.name,
                     "category_items": [
                         {
+                            "id": str(category3_category_item.id),
                             "name": category3_category_item.name,
-                            "records_value_sum": category3_category_item_yesterday_record.value,
+                            "records_value_sum": str(category3_category_item_yesterday_record.value),
                         }
                     ],
                 },
             ],
             "all_time": [
                 {
+                    "id": str(category1.id),
                     "name": category1.name,
                     "category_items": [
                         {
+                            "id": str(category1_category_item.id),
                             "name": category1_category_item.name,
-                            "records_value_sum": (
+                            "records_value_sum": str(
                                 category1_category_item_today_record.value
                                 + category1_category_item_yesterday_record.value
                             ),
@@ -209,20 +235,24 @@ def test_dashboard_stats_endpoint_multiple_everything_with_nsfw(client, db):
                     ],
                 },
                 {
+                    "id": str(category2.id),
                     "name": category2.name,
                     "category_items": [
                         {
+                            "id": str(category2_category_item.id),
                             "name": category2_category_item.name,
-                            "records_value_sum": category2_category_item_yesterday_record.value,
+                            "records_value_sum": str(category2_category_item_yesterday_record.value),
                         }
                     ],
                 },
                 {
+                    "id": str(category3.id),
                     "name": category3.name,
                     "category_items": [
                         {
+                            "id": str(category3_category_item.id),
                             "name": category3_category_item.name,
-                            "records_value_sum": category3_category_item_yesterday_record.value,
+                            "records_value_sum": str(category3_category_item_yesterday_record.value),
                         }
                     ],
                 },
