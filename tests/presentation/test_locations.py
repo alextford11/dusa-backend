@@ -58,3 +58,23 @@ def test_get_locations_with_time_range_filter(client, db):
             {"latitude": str(location2.latitude), "longitude": str(location2.longitude)},
         ]
     }
+
+
+def test_most_recent_location_none_exist(client, db):
+    r = client.get("/location/recent")
+    assert r.status_code == 200
+    assert r.json() == {}
+
+
+def test_most_recent_location_correct(client, db):
+    LocationFactory()
+    LocationFactory(created=datetime.utcnow() - timedelta(days=1))
+    location3 = LocationFactory(created=datetime.utcnow() + timedelta(days=1))
+    r = client.get("/location/recent")
+    assert r.status_code == 200
+    assert r.json() == {
+        "id": str(location3.id),
+        "created": location3.created.isoformat(),
+        "latitude": str(location3.latitude),
+        "longitude": str(location3.longitude),
+    }

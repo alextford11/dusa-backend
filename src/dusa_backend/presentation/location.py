@@ -3,6 +3,7 @@ from sqlalchemy.orm import Session
 from starlette import status
 
 from src.dusa_backend.domain.locations.repository import LocationRepository
+from src.dusa_backend.domain.models import Location
 from src.dusa_backend.infrastructure.database.session import get_db
 from src.dusa_backend.infrastructure.database.tables import LocationTable
 from src.dusa_backend.infrastructure.schemas.common import MessageResponse
@@ -30,3 +31,8 @@ def get_locations(
     else:
         locations = location_repo.get_all_locations()
     return ListLocationsResponse(locations=locations)
+
+
+@router.get("/recent")
+def get_most_recent_location(db_session: Session = Depends(get_db)) -> Location | dict:
+    return LocationRepository(db_session).order_by(LocationTable.created.desc()).limit(1).one_or_none() or {}
