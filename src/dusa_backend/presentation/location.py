@@ -5,6 +5,7 @@ from starlette import status
 from src.dusa_backend.domain.locations.repository import LocationRepository
 from src.dusa_backend.infrastructure.database.session import get_db
 from src.dusa_backend.infrastructure.database.tables import LocationTable
+from src.dusa_backend.infrastructure.schemas.common import MessageResponse
 from src.dusa_backend.infrastructure.schemas.locations import PostLocationPayload, ListLocationsResponse
 from src.dusa_backend.infrastructure.schemas.utils import TimeRangeEnum
 
@@ -12,9 +13,9 @@ router = APIRouter(prefix="/location", tags=["location"])
 
 
 @router.post("/", status_code=status.HTTP_201_CREATED)
-def create_location(payload: PostLocationPayload, db_session: Session = Depends(get_db)) -> dict:
+def create_location(payload: PostLocationPayload, db_session: Session = Depends(get_db)) -> MessageResponse:
     LocationRepository(db_session).create(LocationTable(**payload.model_dump()))
-    return {"message": "Location created"}
+    return MessageResponse(message="Location created")
 
 
 @router.get("/list")

@@ -61,3 +61,56 @@ def test_delete_category_with_category_items_and_records(client, db):
     assert not CategoryRepository(db_session=db).exists()
     assert not CategoryItemRepository(db_session=db).exists()
     assert not RecordRepository(db_session=db).exists()
+
+
+def test_get_categories_no_categories(client, db):
+    r = client.get("/category")
+    assert r.status_code == 200
+    assert r.json() == {"categories": []}
+
+
+def test_get_categories_list_with_categories(client, db):
+    record1 = RecordFactory()
+    record2 = RecordFactory()
+    r = client.get("/category/")
+    assert r.status_code == 200
+    assert r.json() == {
+        "categories": [
+            {
+                "id": str(record1.category_item.category.id),
+                "name": record1.category_item.category.name,
+                "nsfw": False,
+                "category_items": [
+                    {
+                        "id": str(record1.category_item.id),
+                        "name": record1.category_item.name,
+                        "records": [
+                            {
+                                "id": str(record1.id),
+                                "created": record1.created.isoformat(),
+                                "value": str(record1.value),
+                            }
+                        ],
+                    }
+                ],
+            },
+            {
+                "id": str(record2.category_item.category.id),
+                "name": record2.category_item.category.name,
+                "nsfw": False,
+                "category_items": [
+                    {
+                        "id": str(record2.category_item.id),
+                        "name": record2.category_item.name,
+                        "records": [
+                            {
+                                "id": str(record2.id),
+                                "created": record2.created.isoformat(),
+                                "value": str(record2.value),
+                            }
+                        ],
+                    }
+                ],
+            },
+        ]
+    }
