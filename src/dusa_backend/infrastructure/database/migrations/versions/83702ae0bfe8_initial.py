@@ -1,8 +1,8 @@
 """initial
 
-Revision ID: 514cd76d34be
-Revises:
-Create Date: 2023-12-19 11:48:04.133192
+Revision ID: 83702ae0bfe8
+Revises: 
+Create Date: 2023-12-20 20:49:05.908874
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = "514cd76d34be"
+revision = "83702ae0bfe8"
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -38,10 +38,7 @@ def upgrade() -> None:
         sa.Column("name", sa.String(), nullable=False),
         sa.Column("category_id", sa.Uuid(), nullable=False),
         sa.Column("id", sa.Uuid(), nullable=False),
-        sa.ForeignKeyConstraint(
-            ["category_id"],
-            ["categories.id"],
-        ),
+        sa.ForeignKeyConstraint(["category_id"], ["categories.id"], ondelete="CASCADE"),
         sa.PrimaryKeyConstraint("id"),
     )
     op.create_table(
@@ -50,10 +47,7 @@ def upgrade() -> None:
         sa.Column("category_item_id", sa.Uuid(), nullable=False),
         sa.Column("created", sa.DateTime(), nullable=False),
         sa.Column("id", sa.Uuid(), nullable=False),
-        sa.ForeignKeyConstraint(
-            ["category_item_id"],
-            ["category_items.id"],
-        ),
+        sa.ForeignKeyConstraint(["category_item_id"], ["category_items.id"], ondelete="CASCADE"),
         sa.PrimaryKeyConstraint("id"),
     )
     # ### end Alembic commands ###

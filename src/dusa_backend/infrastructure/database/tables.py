@@ -27,7 +27,7 @@ class CategoryItemTable(Base):
     __tablename__ = "category_items"
 
     name: Mapped[str]
-    category_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("categories.id"))
+    category_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("categories.id", ondelete="CASCADE"))
 
     category = relationship(CategoryTable, back_populates="category_items")
     records = relationship("RecordTable", back_populates="category_item")
@@ -41,7 +41,7 @@ class RecordTable(CreatedTimestampMixin, Base):
     __tablename__ = "records"
 
     value: Mapped[Decimal]
-    category_item_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("category_items.id"))
+    category_item_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("category_items.id", ondelete="CASCADE"))
 
     category_item = relationship(CategoryItemTable, back_populates="records")
 
