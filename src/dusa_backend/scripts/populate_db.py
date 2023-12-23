@@ -50,7 +50,7 @@ def populate_db():
                     record_repo.create(RecordTable(category_item=category_item, value=round(uniform(1, 5), 1)))
 
         location_repo = LocationRepository(db_session)
-        for longitude, latitude in LOCATION_COORDS:
+        for latitude, longitude in LOCATION_COORDS:
             location_repo.create(LocationTable(longitude=longitude, latitude=latitude))
     print("Populated!")
 
