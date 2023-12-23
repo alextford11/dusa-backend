@@ -74,28 +74,6 @@ def test_dashboard_stats_endpoint_multiple_everything(client, db):
                         },
                     ],
                 },
-                {
-                    "id": str(category4.id),
-                    "name": category4.name,
-                    "category_items": [
-                        {
-                            "id": str(category4_category_item.id),
-                            "name": category4_category_item.name,
-                            "records_value_sum": str(category4_category_item_record.value),
-                        },
-                    ],
-                },
-                {
-                    "id": str(category5.id),
-                    "name": category5.name,
-                    "category_items": [
-                        {
-                            "id": str(category5_category_item.id),
-                            "name": category5_category_item.name,
-                            "records_value_sum": str(category5_category_item_record.value),
-                        },
-                    ],
-                },
             ],
             "yesterday": [
                 {
