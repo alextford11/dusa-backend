@@ -11,7 +11,7 @@ from src.dusa_backend.infrastructure.database.tables import CategoryItemTable
 from src.dusa_backend.infrastructure.schemas.category_items import PostCategoryItemPayload
 from src.dusa_backend.infrastructure.schemas.common import MessageResponse
 
-router = APIRouter(prefix="/category_item", tags=["Category"])
+router = APIRouter(prefix="/category_item", tags=["Category Item"])
 
 
 @router.post("/", status_code=status.HTTP_201_CREATED)

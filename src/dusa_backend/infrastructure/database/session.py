@@ -19,7 +19,7 @@ def get_session() -> Callable[..., Session]:
     Returns a SQLAlchemy session instance.
     """
     engine = get_engine()
-    session = sessionmaker(bind=engine)
+    session = sessionmaker(autocommit=False, autoflush=False, bind=engine)
     return session
 
 

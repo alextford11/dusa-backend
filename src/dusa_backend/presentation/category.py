@@ -14,6 +14,12 @@ from src.dusa_backend.infrastructure.schemas.common import MessageResponse
 router = APIRouter(prefix="/category", tags=["Category"])
 
 
+@router.get("/")
+def get_categories(db_session: Session = Depends(get_db)) -> GetCategoriesResponse:
+    categories = CategoryRepository(db_session).all()
+    return GetCategoriesResponse(categories=categories)  # type: ignore
+
+
 @router.post("/", status_code=status.HTTP_201_CREATED)
 def create_category(payload: PostCategoryPayload, db_session: Session = Depends(get_db)) -> MessageResponse:
     category_repo = CategoryRepository(db_session)
@@ -23,14 +29,20 @@ def create_category(payload: PostCategoryPayload, db_session: Session = Depends(
     return MessageResponse(message="Category created")
 
 
+@router.post("/{category_id}")
+def update_category(
+    payload: PostCategoryPayload, category_id: UUID, db_session: Session = Depends(get_db)
+) -> MessageResponse:
+    category = get_object_or_404(db_session, CategoryTable, id=str(category_id))
+    for key, value in payload.model_dump().items():
+        setattr(category, key, value)
+
+    CategoryRepository(db_session).update(category)
+    return MessageResponse(message="Category updated")
+
+
 @router.delete("/{category_id}")
 def delete_category(category_id: UUID, db_session: Session = Depends(get_db)) -> MessageResponse:
     category = get_object_or_404(db_session, CategoryTable, id=str(category_id))
     CategoryRepository(db_session).delete(id=category.id)
     return MessageResponse(message="Category deleted")
-
-
-@router.get("/")
-def get_categories(db_session: Session = Depends(get_db)) -> GetCategoriesResponse:
-    categories = CategoryRepository(db_session).all()
-    return GetCategoriesResponse(categories=categories)  # type: ignore

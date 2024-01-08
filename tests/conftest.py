@@ -1,5 +1,4 @@
 import pytest
-from sqlalchemy.orm import sessionmaker
 from starlette.testclient import TestClient
 
 from src.dusa_backend.infrastructure.database.session import get_engine

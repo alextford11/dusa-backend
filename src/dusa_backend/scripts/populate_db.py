@@ -4,7 +4,7 @@ from src.dusa_backend.domain.categories.repository import CategoryRepository
 from src.dusa_backend.domain.category_items.repository import CategoryItemRepository
 from src.dusa_backend.domain.locations.repository import LocationRepository
 from src.dusa_backend.domain.records.repository import RecordRepository
-from src.dusa_backend.infrastructure.database.session import get_db, SessionLocal
+from src.dusa_backend.infrastructure.database.session import SessionLocal
 from src.dusa_backend.infrastructure.database.tables import CategoryTable, CategoryItemTable, RecordTable, LocationTable
 
 CATEGORIES_AND_ITEMS = (

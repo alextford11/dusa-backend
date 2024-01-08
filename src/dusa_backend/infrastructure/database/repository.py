@@ -33,7 +33,7 @@ class BaseRepository:
     def count(self, **kwargs) -> int:
         return self.db_session.query(self.model).filter_by(**kwargs).count()
 
-    def create(self, instance: Base) -> Base:
+    def create(self, instance: Base | Row) -> Base | Row:
         assert not instance.id
 
         if hasattr(instance, "pre_create"):
@@ -44,28 +44,21 @@ class BaseRepository:
             self.db_session.flush()
         except IntegrityError:
             self.db_session.rollback()
-            self.update(instance)
 
         if hasattr(instance, "post_create"):
             instance.post_create(db=self.db_session)
         return instance
 
-    def update(self, instance: Base) -> Base:
+    def update(self, instance: Base | Row) -> Base | Row:
         assert instance.id
 
         try:
-            self.merge(instance)
-        except IntegrityError:
-            self.db_session.rollback()
-        else:
+            self.db_session.merge(instance)
             self.db_session.commit()
             self.db_session.flush()
+        except IntegrityError:
+            self.db_session.rollback()
         return instance
-
-    def merge(self, instance):
-        self.db_session.merge(instance)
-        self.db_session.commit()
-        self.db_session.flush()
 
     def get_or_create(self, **kwargs) -> tuple[Row, bool]:
         created = False
@@ -76,7 +69,7 @@ class BaseRepository:
             created = True
         return instance, created
 
-    def create_or_update(self, instance: Base) -> Base:
+    def create_or_update(self, instance: Base | Row) -> Base | Row:
         if instance.id:
             return self.update(instance)
         return self.create(instance)

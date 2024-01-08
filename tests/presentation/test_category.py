@@ -4,7 +4,6 @@ from src.dusa_backend.domain.categories.repository import CategoryRepository
 from src.dusa_backend.domain.category_items.repository import CategoryItemRepository
 from src.dusa_backend.domain.records.repository import RecordRepository
 from tests.factories.categories import CategoryFactory
-from tests.factories.category_items import CategoryItemFactory
 from tests.factories.records import RecordFactory
 
 
@@ -114,3 +113,19 @@ def test_get_categories_list_with_categories(client, db):
             },
         ]
     }
+
+
+def test_update_category_not_found(client, db):
+    r = client.post(f"/category/{uuid.uuid4()}", json={"name": "testing", "nsfw": False})
+    assert r.status_code == 404
+
+
+def test_update_category_updated(client, db):
+    category = CategoryFactory(name="Test Category", nsfw=False)
+    r = client.post(f"/category/{category.id}", json={"name": "testing", "nsfw": True})
+    assert r.status_code == 200
+    assert r.json() == {"message": "Category updated"}
+
+    db.refresh(category)
+    assert category.name == "testing"
+    assert category.nsfw
