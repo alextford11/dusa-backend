@@ -14,7 +14,7 @@ from src.dusa_backend.infrastructure.schemas.common import MessageResponse
 router = APIRouter(prefix="/category_item", tags=["Category Item"])
 
 
-@router.post("/", status_code=status.HTTP_201_CREATED)
+@router.post("", status_code=status.HTTP_201_CREATED)
 def create_category_item(payload: CreateCategoryItemPayload, db_session: Session = Depends(get_db)) -> MessageResponse:
     category_item_repo = CategoryItemRepository(db_session)
     if category_item_repo.exists(**payload.model_dump()):

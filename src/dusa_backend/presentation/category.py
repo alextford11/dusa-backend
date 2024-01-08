@@ -14,13 +14,13 @@ from src.dusa_backend.infrastructure.schemas.common import MessageResponse
 router = APIRouter(prefix="/category", tags=["Category"])
 
 
-@router.get("/")
+@router.get("")
 def get_categories(db_session: Session = Depends(get_db)) -> GetCategoriesResponse:
     categories = CategoryRepository(db_session).all()
     return GetCategoriesResponse(categories=categories)  # type: ignore
 
 
-@router.post("/", status_code=status.HTTP_201_CREATED)
+@router.post("", status_code=status.HTTP_201_CREATED)
 def create_category(payload: PostCategoryPayload, db_session: Session = Depends(get_db)) -> MessageResponse:
     category_repo = CategoryRepository(db_session)
     if category_repo.exists(name=payload.name):
