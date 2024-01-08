@@ -34,8 +34,8 @@ def update_category(
     payload: PostCategoryPayload, category_id: UUID, db_session: Session = Depends(get_db)
 ) -> MessageResponse:
     category = get_object_or_404(db_session, CategoryTable, id=str(category_id))
-    for key, value in payload.model_dump().items():
-        setattr(category, key, value)
+    for field, value in payload.model_dump().items():
+        setattr(category, field, value)
 
     CategoryRepository(db_session).update(category)
     return MessageResponse(message="Category updated")

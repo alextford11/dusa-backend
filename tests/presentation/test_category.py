@@ -118,6 +118,7 @@ def test_get_categories_list_with_categories(client, db):
 def test_update_category_not_found(client, db):
     r = client.post(f"/category/{uuid.uuid4()}", json={"name": "testing", "nsfw": False})
     assert r.status_code == 404
+    assert r.json() == {"detail": "CategoryTable not found"}
 
 
 def test_update_category_updated(client, db):

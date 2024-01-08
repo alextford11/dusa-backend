@@ -47,3 +47,19 @@ def test_delete_category_item_with_records(client, db):
     assert CategoryRepository(db_session=db).exists()
     assert not CategoryItemRepository(db_session=db).exists()
     assert not RecordRepository(db_session=db).exists()
+
+
+def test_update_category_not_found(client, db):
+    r = client.post(f"/category_item/{uuid.uuid4()}", json={"name": "testing", "nsfw": False})
+    assert r.status_code == 404
+    assert r.json() == {"detail": "CategoryItemTable not found"}
+
+
+def test_update_category_updated(client, db):
+    category_item = CategoryItemFactory(name="Test Category Item")
+    r = client.post(f"/category_item/{category_item.id}", json={"name": "testing"})
+    assert r.status_code == 200
+    assert r.json() == {"message": "Category Item updated"}
+
+    db.refresh(category_item)
+    assert category_item.name == "testing"
