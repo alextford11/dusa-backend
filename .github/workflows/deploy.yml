@@ -1,0 +1,72 @@
+#name: Build and Deploy
+#
+#on:
+#  push:
+#    tags:
+#      - '*.*.*'
+#
+#env:
+#  IMAGE: dusa-backend
+#  PROJECT_ID: down-under-stats-app
+#  CLOUD_RUN_SERVICE: dusa-backend
+#
+#jobs:
+#  build-and-deploy:
+#    name: Build and deploy the Docker image
+#    runs-on: ubuntu-latest
+#    permissions:
+#      contents: 'read'
+#      id-token: 'write'
+#
+#    steps:
+#      # Clone the git repo
+#      - name: Checkout
+#        uses: actions/checkout@v3
+#
+#      # Setup gcloud CLI
+#      - id: auth
+#        name: Authenticate to Google Cloud
+#        uses: google-github-actions/auth@v0
+#        with:
+#          workload_identity_provider: ${{ env.GC_WIP }}
+#          service_account: ${{ env.GC_SA }}
+#          token_format: 'access_token'
+#
+#      # Get the image tag, tag or sha if a branch deployed.
+#      - name: Get the image tag
+#        run: |
+#          if [[ "${GITHUB_REF}" == *'tags'* ]]; then
+#            echo "IMAGE_TAG=${GITHUB_REF#refs/tags/*}" >> $GITHUB_ENV
+#          else
+#            echo "IMAGE_TAG=${GITHUB_SHA}" >> $GITHUB_ENV
+#          fi
+#
+#      # Configure Docker to use the gcloud command-line tool as a credential helper for authentication
+#      - name: Docker login setup
+#        uses: docker/login-action@v2
+#        with:
+#          registry: 'europe-west1-docker.pkg.dev'
+#          username: 'oauth2accesstoken'
+#          password: '${{ steps.auth.outputs.access_token }}'
+#
+#      - name: Docker login
+#        run: |-
+#          echo '${{ steps.auth.outputs.access_token }}' | docker login -u oauth2accesstoken --password-stdin https://europe-west1-docker.pkg.dev
+#
+#      # Build the Docker image
+#      - name: Build
+#        run: |-
+#          docker build . \
+#            --tag "europe-west1-docker.pkg.dev/$PROJECT_ID/$IMAGE:$IMAGE_TAG" \
+#            --tag "europe-west1-docker.pkg.dev/$PROJECT_ID/$IMAGE:latest" \
+#            --no-cache
+#
+#      # Push the Docker image to Google Container Registry
+#      - name: Publish
+#        run: |-
+#          docker push --all-tags "europe-west1-docker.pkg.dev/$PROJECT_ID/$IMAGE"
+#
+#      # Deploy new image to existing Cloud Run service
+#      - name: Deploy
+#        run: |-
+#          gcloud run deploy $CLOUD_RUN_SERVICE --image "europe-west1-docker.pkg.dev/$PROJECT_ID/$IMAGE"
