@@ -1,6 +1,5 @@
 from datetime import datetime, timedelta
 
-from src.dusa_backend.domain.models import Category
 from tests.factories.categories import CategoryFactory
 from tests.factories.category_items import CategoryItemFactory
 from tests.factories.records import RecordFactory

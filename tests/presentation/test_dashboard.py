@@ -23,8 +23,8 @@ def test_dashboard_stats_endpoint_multiple_everything(client, db):
     category1_category_item_record = RecordFactory(category_item=category1_category_item)
     category2_category_item_record = RecordFactory(category_item=category2_category_item)
     category3_category_item_record = RecordFactory(category_item=category3_category_item)
-    category4_category_item_record = RecordFactory(category_item=category4_category_item)
-    category5_category_item_record = RecordFactory(category_item=category5_category_item)
+    RecordFactory(category_item=category4_category_item)
+    RecordFactory(category_item=category5_category_item)
     RecordFactory(category_item=category6_category_item)
 
     yesterday = datetime.utcnow() - timedelta(days=1)

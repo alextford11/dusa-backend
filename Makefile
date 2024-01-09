@@ -15,6 +15,7 @@ format:
 .PHONY: lint
 lint:
 	pre-commit run --all-files
+	ruff check src/ tests/
 
 .PHONY: test
 test:
