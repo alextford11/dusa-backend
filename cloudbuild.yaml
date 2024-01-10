@@ -24,24 +24,10 @@ steps:
     - '${_LOCATION}-docker.pkg.dev/$PROJECT_ID/${_REPOSITORY}/${_IMAGE}:$COMMIT_SHA'
     - '--region'
     - '${_LOCATION}'
-  # Deploy artifact image to Cloud Run Job for migrations
-  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
-    entrypoint: gcloud
-    args:
-      - 'run'
-      - 'jobs'
-      - 'deploy'
-      - '${_MIGRATIONS_SERVICE_NAME}'
-      - '--image'
-      - '${_LOCATION}-docker.pkg.dev/$PROJECT_ID/${_REPOSITORY}/${_IMAGE}:$COMMIT_SHA'
-      - '--region'
-      - '${_LOCATION}'
-      - '--execute-now'
 images:
   - '${_LOCATION}-docker.pkg.dev/$PROJECT_ID/${_REPOSITORY}/${_IMAGE}:$COMMIT_SHA'
 substitutions:
   _API_SERVICE_NAME: dusa-backend
-  _MIGRATIONS_SERVICE_NAME: dusa-backend-migrations
   _LOCATION: europe-west1
   _IMAGE: dusa-backend
   _REPOSITORY: backend
