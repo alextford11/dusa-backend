@@ -19,7 +19,7 @@ steps:
     args:
     - 'run'
     - 'deploy'
-    - '${_SERVICE_NAME}'
+    - '${_API_SERVICE_NAME}'
     - '--image'
     - '${_LOCATION}-docker.pkg.dev/$PROJECT_ID/${_REPOSITORY}/${_IMAGE}:$COMMIT_SHA'
     - '--region'
