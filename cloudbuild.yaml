@@ -1,19 +1,19 @@
 steps:
-  # Build the container image
+  # Build the artifact image
   - name: 'gcr.io/cloud-builders/docker'
     args:
       - 'build'
       - '-t'
-      - 'gcr.io/$PROJECT_ID/${_SERVICE_NAME}:$COMMIT_SHA'
+      - '${_LOCATION}-docker.pkg.dev/$PROJECT_ID/${_REPOSITORY}/${_SERVICE_NAME}:$COMMIT_SHA'
       - '-f'
       - 'docker/api/Dockerfile'
       - '.'
-  # Push the container image to Container Registry
+  # Push the artifact image to Container Registry
   - name: 'gcr.io/cloud-builders/docker'
     args:
       - 'push'
-      - 'gcr.io/$PROJECT_ID/${_SERVICE_NAME}:$COMMIT_SHA'
-  # Deploy container image to Cloud Run
+      - '${_LOCATION}-docker.pkg.dev/$PROJECT_ID/${_REPOSITORY}/${_SERVICE_NAME}:$COMMIT_SHA'
+  # Deploy artifact image to Cloud Run
   - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
     entrypoint: gcloud
     args:
@@ -21,13 +21,14 @@ steps:
     - 'deploy'
     - '${_SERVICE_NAME}'
     - '--image'
-    - 'gcr.io/$PROJECT_ID/${_SERVICE_NAME}:$COMMIT_SHA'
+    - '${_LOCATION}-docker.pkg.dev/$PROJECT_ID/${_REPOSITORY}/${_SERVICE_NAME}:$COMMIT_SHA'
     - '--region'
-    - '${_REGION}'
+    - '${_LOCATION}'
 images:
   - 'gcr.io/$PROJECT_ID/${_SERVICE_NAME}:$COMMIT_SHA'
 substitutions:
   _SERVICE_NAME: dusa-backend
-  _REGION: europe-west1
+  _LOCATION: europe-west1
+  _REPOSITORY: backend
 options:
   logging: CLOUD_LOGGING_ONLY
