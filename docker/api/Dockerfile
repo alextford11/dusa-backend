@@ -4,6 +4,7 @@ WORKDIR /code
 
 COPY ./pyproject.toml /code/pyproject.toml
 COPY ./entrypoint.sh /code/entrypoint.sh
+COPY ./alembic.ini /code/alembic.ini
 COPY ./src /code/src
 
 RUN chmod +x entrypoint.sh
