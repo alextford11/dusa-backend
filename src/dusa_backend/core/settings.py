@@ -35,6 +35,11 @@ class Settings(BaseSettings):
     db_host: str | None = None
     db_port: int | None = None
     db_name: str | None = None
+    cloud_sql_instance: str | None = None
+
+    # google settings
+    google_cloud_project: str | None = None
+    google_cloud_region: str | None = None
 
     model_config = SettingsConfigDict(
         env_file=ENV_FILE_MAPPING.get(ENV),  # loads a .env file for testing or local use only
@@ -49,6 +54,10 @@ class Settings(BaseSettings):
                 "db_host": {"env": "DB_HOST"},
                 "db_port": {"env": "DB_PORT"},
                 "db_name": {"env": "DB_NAME"},
+                "cloud_sql_instance": {"env": "CLOUD_SQL_INSTANCE"},
+                # google
+                "google_cloud_project": {"env": "GOOGLE_CLOUD_PROJECT"},
+                "google_cloud_region": {"env": "GOOGLE_CLOUD_REGION"},
             },
         },
     )
@@ -60,6 +69,14 @@ class Settings(BaseSettings):
         """
         pwd = f":{self.db_password}" if self.db_password else ""
         return f"postgresql://{self.db_user}{pwd}@{self.db_host}:{self.db_port}/{self.db_name}"
+
+    @property
+    def is_testing(self) -> bool:
+        return self.env == EnvEnum.TESTING
+
+    @property
+    def is_local(self) -> bool:
+        return self.env == EnvEnum.LOCAL
 
 
 settings = Settings()
