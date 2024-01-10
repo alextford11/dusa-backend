@@ -4,7 +4,7 @@ steps:
     args:
       - 'build'
       - '-t'
-      - '${_LOCATION}-docker.pkg.dev/$PROJECT_ID/${_REPOSITORY}/${_SERVICE_NAME}:$COMMIT_SHA'
+      - '${_LOCATION}-docker.pkg.dev/$PROJECT_ID/${_REPOSITORY}/${_IMAGE}:$COMMIT_SHA'
       - '-f'
       - 'docker/api/Dockerfile'
       - '.'
@@ -12,8 +12,8 @@ steps:
   - name: 'gcr.io/cloud-builders/docker'
     args:
       - 'push'
-      - '${_LOCATION}-docker.pkg.dev/$PROJECT_ID/${_REPOSITORY}/${_SERVICE_NAME}:$COMMIT_SHA'
-  # Deploy artifact image to Cloud Run
+      - '${_LOCATION}-docker.pkg.dev/$PROJECT_ID/${_REPOSITORY}/${_IMAGE}:$COMMIT_SHA'
+  # Deploy artifact image to Cloud Run Services for api
   - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
     entrypoint: gcloud
     args:
@@ -21,14 +21,28 @@ steps:
     - 'deploy'
     - '${_SERVICE_NAME}'
     - '--image'
-    - '${_LOCATION}-docker.pkg.dev/$PROJECT_ID/${_REPOSITORY}/${_SERVICE_NAME}:$COMMIT_SHA'
+    - '${_LOCATION}-docker.pkg.dev/$PROJECT_ID/${_REPOSITORY}/${_IMAGE}:$COMMIT_SHA'
     - '--region'
     - '${_LOCATION}'
+  # Deploy artifact image to Cloud Run Job for migrations
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+    entrypoint: gcloud
+    args:
+      - 'run'
+      - 'jobs'
+      - 'deploy'
+      - '${_MIGRATIONS_SERVICE_NAME}'
+      - '--image'
+      - '${_LOCATION}-docker.pkg.dev/$PROJECT_ID/${_REPOSITORY}/${_IMAGE}:$COMMIT_SHA'
+      - '--region'
+      - '${_LOCATION}'
 images:
-  - '${_LOCATION}-docker.pkg.dev/$PROJECT_ID/${_REPOSITORY}/${_SERVICE_NAME}:$COMMIT_SHA'
+  - '${_LOCATION}-docker.pkg.dev/$PROJECT_ID/${_REPOSITORY}/${_IMAGE}:$COMMIT_SHA'
 substitutions:
-  _SERVICE_NAME: dusa-backend
+  _API_SERVICE_NAME: dusa-backend
+  _MIGRATIONS_SERVICE_NAME: dusa-backend-migrations
   _LOCATION: europe-west1
+  _IMAGE: dusa-backend
   _REPOSITORY: backend
 options:
   logging: CLOUD_LOGGING_ONLY
