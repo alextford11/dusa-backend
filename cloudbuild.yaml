@@ -36,6 +36,7 @@ steps:
       - '${_LOCATION}-docker.pkg.dev/$PROJECT_ID/${_REPOSITORY}/${_IMAGE}:$COMMIT_SHA'
       - '--region'
       - '${_LOCATION}'
+      - '--execute-now'
 images:
   - '${_LOCATION}-docker.pkg.dev/$PROJECT_ID/${_REPOSITORY}/${_IMAGE}:$COMMIT_SHA'
 substitutions:
