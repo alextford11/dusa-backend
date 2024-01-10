@@ -25,6 +25,6 @@ steps:
 images:
   - 'gcr.io/$PROJECT_ID/${_SERVICE_NAME}:$COMMIT_SHA'
 substitutions:
-  $_SERVICE_NAME: dusa-backend
+  _SERVICE_NAME: dusa-backend
 options:
   logging: CLOUD_LOGGING_ONLY
