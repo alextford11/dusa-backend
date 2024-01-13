@@ -16,6 +16,7 @@ app.add_middleware(
     CORSMiddleware,
     allow_origins=[
         "http://localhost:3000",
+        "https://down-under-stats-app.web.app/",
     ],
     allow_credentials=True,
     allow_methods=["*"],
