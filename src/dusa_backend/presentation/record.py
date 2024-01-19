@@ -4,7 +4,6 @@ from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 from starlette import status
 
-from src.dusa_backend.domain.models import Record
 from src.dusa_backend.domain.records.repository import RecordRepository
 from src.dusa_backend.infrastructure.database.repository import get_object_or_404
 from src.dusa_backend.infrastructure.database.session import get_db
