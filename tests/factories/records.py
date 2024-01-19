@@ -13,4 +13,4 @@ class RecordFactory(FactoryBase):
 
     value = factory.Faker("pyint", min_value=1, max_value=10)
     category_item = factory.SubFactory(CategoryItemFactory)
-    created = datetime.utcnow()
+    created = factory.LazyFunction(datetime.utcnow)
