@@ -26,7 +26,7 @@ def test_get_records_list_empty(client, db):
 
     r = client.get("/record")
     assert r.status_code == 200
-    assert r.json() == []
+    assert r.json() == {"records": []}
 
 
 def test_get_records(client, db):
@@ -34,30 +34,32 @@ def test_get_records(client, db):
     record2 = RecordFactory()
     r = client.get("/record")
     assert r.status_code == 200
-    assert r.json() == [
-        {
-            "id": str(record2.id),
-            "value": str(record2.value),
-            "created": record2.created.isoformat(),
-            "category_item_name": record2.category_item.name,
-            "category_name": record2.category_item.category.name,
-        },
-        {
-            "id": str(record1.id),
-            "value": str(record1.value),
-            "created": record1.created.isoformat(),
-            "category_item_name": record1.category_item.name,
-            "category_name": record1.category_item.category.name,
-        },
-    ]
+    assert r.json() == {
+        "records": [
+            {
+                "id": str(record2.id),
+                "value": str(record2.value),
+                "created": record2.created.isoformat(),
+                "category_item_name": record2.category_item.name,
+                "category_name": record2.category_item.category.name,
+            },
+            {
+                "id": str(record1.id),
+                "value": str(record1.value),
+                "created": record1.created.isoformat(),
+                "category_item_name": record1.category_item.name,
+                "category_name": record1.category_item.category.name,
+            },
+        ]
+    }
 
     for _ in range(15):
         RecordFactory()
 
     r = client.get("/record")
     assert r.status_code == 200
-    assert len(r.json()) == 10
+    assert len(r.json()["records"]) == 10
 
-    for record in r.json():
+    for record in r.json()["records"]:
         assert str(record1.id) != record["id"]
         assert str(record2.id) != record["id"]

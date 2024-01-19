@@ -10,7 +10,7 @@ from src.dusa_backend.infrastructure.database.repository import get_object_or_40
 from src.dusa_backend.infrastructure.database.session import get_db
 from src.dusa_backend.infrastructure.database.tables import RecordTable, CategoryItemTable
 from src.dusa_backend.infrastructure.schemas.common import MessageResponse
-from src.dusa_backend.infrastructure.schemas.records import PostRecordPayload
+from src.dusa_backend.infrastructure.schemas.records import PostRecordPayload, GetRecordListResponse, RecordListItem
 
 router = APIRouter(prefix="/record", tags=["Record"])
 logger = logging.getLogger(__name__)
@@ -24,15 +24,19 @@ def create_record(payload: PostRecordPayload, db_session: Session = Depends(get_
 
 
 @router.get("/")
-def get_records(db_session: Session = Depends(get_db)) -> list:
+def get_records(db_session: Session = Depends(get_db)) -> GetRecordListResponse:
     records = RecordRepository(db_session).order_by(RecordTable.created.desc())[:10]
-    return [
-        {
-            "id": record.id,
-            "value": record.value,
-            "created": record.created,
-            "category_item_name": record.category_item.name,
-            "category_name": record.category_item.category.name,
-        }
-        for record in records
-    ]
+    return GetRecordListResponse(
+        records=[
+            RecordListItem(
+                **{
+                    "id": record.id,
+                    "value": record.value,
+                    "created": record.created,
+                    "category_item_name": record.category_item.name,
+                    "category_name": record.category_item.category.name,
+                }
+            )
+            for record in records
+        ]
+    )
