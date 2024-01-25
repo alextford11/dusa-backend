@@ -1,4 +1,7 @@
 import uuid
+from datetime import datetime
+
+from dirty_equals import IsNow
 
 from src.dusa_backend.domain.records.repository import RecordRepository
 from tests.factories.category_items import CategoryItemFactory
@@ -19,6 +22,24 @@ def test_create_record_created(client, db):
     assert r.status_code == 201
     assert r.json() == {"message": "Record created"}
     assert RecordRepository(db_session=db).exists()
+
+
+def test_create_record_created_datetime(client, db):
+    assert not RecordRepository(db_session=db).exists()
+
+    category_item = CategoryItemFactory()
+    r = client.post("/record", json={"category_item_id": str(category_item.id), "value": "12.34"})
+    assert r.status_code == 201
+    assert r.json() == {"message": "Record created"}
+    assert RecordRepository(db_session=db).all()[0].created == IsNow
+
+    created = datetime(2024, 1, 1)
+    r = client.post(
+        "/record", json={"category_item_id": str(category_item.id), "value": "12.34", "created": created.isoformat()}
+    )
+    assert r.status_code == 201
+    assert r.json() == {"message": "Record created"}
+    assert RecordRepository(db_session=db).all()[1].created == created
 
 
 def test_get_records_list_empty(client, db):

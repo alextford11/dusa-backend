@@ -1,3 +1,4 @@
+from datetime import datetime
 from decimal import Decimal
 from uuid import UUID
 
@@ -9,6 +10,7 @@ from src.dusa_backend.domain.models import Record
 class PostRecordPayload(BaseModel):
     category_item_id: UUID
     value: Decimal
+    created: datetime | None = None
 
 
 class RecordListItem(Record):
