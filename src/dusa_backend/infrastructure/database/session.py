@@ -38,7 +38,6 @@ def get_cloud_sql_engine() -> Engine:  # pragma: no cover
             user=settings.db_user,
             password=settings.db_password,
             db=settings.db_name,
-            # enable_iam_auth=True,
         )
 
     return create_engine("postgresql+pg8000://", creator=get_cloud_sql_connection)

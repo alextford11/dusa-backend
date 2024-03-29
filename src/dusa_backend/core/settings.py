@@ -18,6 +18,7 @@ BACKEND_DIR = Path(__file__).resolve().parent.parent.parent.parent
 ENV_FILE_MAPPING = {
     EnvEnum.TESTING: BACKEND_DIR / ".env.testing",
     EnvEnum.LOCAL: BACKEND_DIR / ".env.local-dev",
+    EnvEnum.DEV: BACKEND_DIR / ".env.local-dev",
 }
 
 
